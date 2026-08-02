@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control de Asistencia | Universidad</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-seal">U</div>
+    <div class="brand-text">
+      <div class="eyebrow">Sistema de Asistencia</div>
+      <h1>Control de Ingreso &amp; Salida</h1>
+    </div>
+  </div>
+  <nav>
+    <a href="/admin.html">Panel Admin →</a>
+  </nav>
+</div>
+
+<div class="wrap narrow">
+
+  <div class="card login-card">
+    <div class="profile-role" style="margin-bottom:14px;">Identificación</div>
+    <h2>Marcar asistencia</h2>
+    <div class="sub">Ingresá tu usuario y contraseña para registrar tu <strong>ingreso</strong> o <strong>salida</strong>. Debés hacerlo dentro del campus las dos veces.</div>
+
+    <div class="gps-ring" id="gps-ring">
+      <div class="inner">
+        <div class="dist" id="gps-dist">—</div>
+        <div class="label" id="gps-label">Obteniendo ubicación…</div>
+      </div>
+    </div>
+
+    <label for="legajo">Usuario (legajo)</label>
+    <input id="legajo" placeholder="Ej: DOC-001" autocomplete="off">
+    <label for="pin">Contraseña</label>
+    <input id="pin" type="password" placeholder="••••" autocomplete="off">
+
+    <button class="btn-primary mark-btn" id="btn-marcar" onclick="marcar()" disabled>Verificando ubicación…</button>
+    <div id="marcar-error"></div>
+
+    <div class="footer-note" id="ultimo-registro">Ingresá con tu documento y contraseña.</div>
+    <div class="footer-note" style="margin-top:10px;"><a href="/registro.html" style="text-decoration:underline; color:var(--ink);">¿Todavía no tenés usuario? Registrate acá →</a></div>
+  </div>
+
+</div>
+
+<div class="stamp-overlay" id="stamp-overlay">
+  <div class="stamp">
+    <div class="tipo" id="stamp-tipo">INGRESO</div>
+    <div class="hora" id="stamp-hora">00:00:00</div>
+    <div class="nombre" id="stamp-nombre">Nombre Apellido</div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
