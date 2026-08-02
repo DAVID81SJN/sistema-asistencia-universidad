@@ -1,0 +1,226 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --ink: #14213D;
+  --ink-2: #1F2E4F;
+  --paper: #EEF1F6;
+  --paper-card: #FFFFFF;
+  --gold: #B08D2E;
+  --gold-light: #E4C97A;
+  --success: #2F8F5B;
+  --success-bg: #E7F4EC;
+  --alert: #B8433B;
+  --alert-bg: #FBEAE9;
+  --slate: #48536A;
+  --slate-light: #8792A6;
+  --border: #DCE1EA;
+  --radius: 10px;
+  --shadow: 0 1px 2px rgba(20,33,61,0.06), 0 4px 16px rgba(20,33,61,0.06);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .display {
+  font-family: 'Source Serif 4', Georgia, serif;
+  letter-spacing: -0.01em;
+}
+
+.mono { font-family: 'IBM Plex Mono', monospace; }
+
+a { color: inherit; }
+
+/* Header institucional */
+.topbar {
+  background: var(--ink);
+  color: #fff;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px solid var(--gold);
+}
+.topbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand-seal {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 2px solid var(--gold-light);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Source Serif 4', serif; font-weight: 700; font-size: 15px;
+  color: var(--gold-light);
+}
+.brand-text .eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--gold-light); font-family: 'Inter'; font-weight: 600;
+}
+.brand-text h1 { font-size: 18px; margin: 0; color: #fff; }
+.topbar nav a {
+  color: #C9D2E3; text-decoration: none; font-size: 14px; margin-left: 22px; font-weight: 500;
+}
+.topbar nav a:hover { color: #fff; }
+
+.wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 60px; }
+.wrap.narrow { max-width: 480px; }
+
+/* Cards */
+.card {
+  background: var(--paper-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px;
+}
+
+/* Login */
+.login-card { text-align: center; }
+.login-card h2 { margin: 4px 0 4px; font-size: 22px; }
+.login-card .sub { color: var(--slate); font-size: 14px; margin-bottom: 24px; }
+
+input, select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 12px;
+  background: #fff;
+  color: var(--ink);
+}
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(176,141,46,0.15);
+}
+label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--slate); font-weight: 600; display: block; margin-bottom: 6px; text-align: left; }
+
+button {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  padding: 13px 20px;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.15s ease;
+}
+button:active { transform: translateY(1px); }
+.btn-primary { background: var(--ink); color: #fff; width: 100%; }
+.btn-primary:hover { background: var(--ink-2); }
+.btn-gold { background: var(--gold); color: #fff; }
+.btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--ink); }
+.btn-outline:hover { border-color: var(--slate); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.error-msg {
+  background: var(--alert-bg); color: var(--alert);
+  padding: 10px 14px; border-radius: 8px; font-size: 13.5px; margin-top: 10px; text-align: left;
+}
+
+/* Perfil / marcado */
+.profile-card { text-align: center; }
+.profile-role {
+  display: inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+  background: var(--paper); color: var(--slate); padding: 4px 10px; border-radius: 20px; font-weight: 600; margin-bottom: 10px;
+}
+.profile-card h2 { margin: 0 0 2px; font-size: 24px; }
+.profile-legajo { color: var(--slate-light); font-size: 13px; margin-bottom: 22px; }
+
+.gps-ring {
+  width: 190px; height: 190px; border-radius: 50%;
+  border: 3px dashed var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 22px;
+  position: relative;
+  transition: border-color 0.3s ease;
+}
+.gps-ring.checking { border-color: var(--gold-light); animation: pulse 1.4s infinite; }
+.gps-ring.dentro { border-color: var(--success); border-style: solid; }
+.gps-ring.fuera { border-color: var(--alert); border-style: solid; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+
+.gps-ring .inner { text-align: center; }
+.gps-ring .inner .dist { font-family: 'IBM Plex Mono'; font-size: 22px; font-weight: 500; }
+.gps-ring .inner .label { font-size: 11px; color: var(--slate); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+.mark-btn {
+  width: 100%; padding: 16px; font-size: 16px;
+}
+.mark-btn.ingreso { background: var(--success); color: #fff; }
+.mark-btn.salida { background: var(--ink); color: #fff; }
+
+/* Sello / stamp */
+.stamp-overlay {
+  position: fixed; inset: 0; background: rgba(20,33,61,0.55);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+}
+.stamp-overlay.show { opacity: 1; pointer-events: all; }
+.stamp {
+  width: 220px; height: 220px; border-radius: 50%;
+  border: 6px solid var(--gold);
+  color: var(--gold);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: #fff;
+  transform: scale(0.4) rotate(-18deg);
+  transition: transform 0.35s cubic-bezier(.2,1.6,.4,1);
+  font-family: 'Source Serif 4', serif;
+  text-align: center;
+  padding: 10px;
+}
+.stamp-overlay.show .stamp { transform: scale(1) rotate(-8deg); }
+.stamp .tipo { font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.stamp .hora { font-family: 'IBM Plex Mono'; font-size: 15px; margin-top: 6px; color: var(--ink); }
+.stamp .nombre { font-size: 11px; margin-top: 4px; color: var(--slate); font-family: 'Inter'; }
+
+/* Tabla ledger */
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+thead th {
+  text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--slate); padding: 10px 10px; border-bottom: 2px solid var(--ink);
+}
+tbody td { padding: 10px 10px; border-bottom: 1px solid var(--border); font-family: 'IBM Plex Mono'; }
+tbody td.name-cell { font-family: 'Inter'; font-weight: 500; }
+tbody tr:hover { background: #F7F9FC; }
+.badge { padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; font-family: 'Inter'; }
+.badge.completo { background: var(--success-bg); color: var(--success); }
+.badge.incompleto { background: var(--alert-bg); color: var(--alert); }
+
+.toolbar {
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: end; margin-bottom: 22px;
+}
+.toolbar .field { flex: 1; min-width: 140px; }
+.toolbar .field label { margin-bottom: 4px; }
+.toolbar .field input, .toolbar .field select { margin-bottom: 0; }
+
+.section-title {
+  font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--slate);
+  font-weight: 600; margin: 30px 0 12px;
+}
+
+.stat-row { display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+.stat {
+  flex: 1; min-width: 140px; background: var(--paper-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 18px;
+}
+.stat .num { font-family: 'Source Serif 4', serif; font-size: 26px; font-weight: 700; }
+.stat .lbl { font-size: 12px; color: var(--slate); margin-top: 2px; }
+
+.actions-row { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+
+.footer-note { text-align: center; color: var(--slate-light); font-size: 12px; margin-top: 30px; }
+
+@media (max-width: 640px) {
+  .wrap { padding: 20px 14px 40px; }
+  .stat-row { flex-direction: column; }
+}

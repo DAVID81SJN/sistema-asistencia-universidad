@@ -1,0 +1,21 @@
+{
+  "name": "attendance-system",
+  "version": "1.0.0",
+  "description": "Sistema de control de asistencia por GPS para universidad (admin, docentes, alumnos)",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node db/seed.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "exceljs": "^4.4.0",
+    "pdfkit": "^0.15.0",
+    "uuid": "^9.0.1"
+  }
+}
