@@ -19,7 +19,19 @@
   <nav><a href="/index.html">Marcar asistencia →</a></nav>
 </div>
 
-<div class="wrap">
+<div class="wrap narrow" id="gate-view">
+  <div class="card login-card">
+    <div class="profile-role" style="margin-bottom:14px;">Acceso restringido</div>
+    <h2>Panel del Administrador</h2>
+    <div class="sub">Ingresá el código de acceso para continuar.</div>
+    <label for="admin-codigo">Código de acceso</label>
+    <input id="admin-codigo" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off">
+    <button class="btn-primary" onclick="ingresarAdmin()">Ingresar</button>
+    <div id="gate-error"></div>
+  </div>
+</div>
+
+<div class="wrap" id="panel-content" style="display:none;">
 
   <div class="stat-row" id="stats"></div>
 
@@ -85,6 +97,64 @@
         </tr>
       </thead>
       <tbody id="resumen-body"></tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Configuración del campus (ubicación GPS)</div>
+  <div class="card">
+    <div class="toolbar">
+      <div class="field">
+        <label>Sede</label>
+        <select id="sede-select" onchange="cargarSedeEnFormulario()"></select>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="field">
+        <label>Nombre de la sede</label>
+        <input id="sede-nombre">
+      </div>
+      <div class="field">
+        <label>Latitud</label>
+        <input id="sede-lat" type="text" placeholder="Ej: -26.111267892360647">
+      </div>
+      <div class="field">
+        <label>Longitud</label>
+        <input id="sede-lng" type="text" placeholder="Ej: -55.93853079315146">
+      </div>
+      <div class="field">
+        <label>Radio permitido (metros)</label>
+        <input id="sede-radio" type="number" placeholder="Ej: 150">
+      </div>
+    </div>
+    <div class="actions-row">
+      <button class="btn-primary" style="width:auto;" onclick="guardarSede()">Guardar ubicación</button>
+      <span id="sede-guardado" style="color:var(--success); font-weight:600; align-self:center; display:none;">✓ Guardado</span>
+    </div>
+    <div class="footer-note" style="text-align:left; margin-top:14px;">
+      Tip: en Google Maps, hacé clic derecho sobre el punto exacto del campus y copiá las coordenadas que aparecen arriba del menú.
+    </div>
+  </div>
+
+  <div class="section-title">Usuarios registrados (con contraseñas, para asistencia del administrador)</div>
+  <div class="card">
+    <div class="toolbar">
+      <div class="field">
+        <label>Filtrar por rol</label>
+        <select id="uf-rol" onchange="cargarUsuariosCompleto()">
+          <option value="">Todos</option>
+          <option value="administrativo">Administrativo</option>
+          <option value="docente">Docente</option>
+          <option value="alumno">Alumno</option>
+        </select>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre completo</th><th>Documento / Usuario</th><th>Rol</th><th>Sede</th><th>Contraseña</th><th>Estado</th><th></th>
+        </tr>
+      </thead>
+      <tbody id="usuarios-completo-body"></tbody>
     </table>
   </div>
 

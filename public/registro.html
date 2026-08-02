@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro | Sistema de Asistencia</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-seal">U</div>
+    <div class="brand-text">
+      <div class="eyebrow">Sistema de Asistencia</div>
+      <h1>Registro de Usuario</h1>
+    </div>
+  </div>
+  <nav><a href="/index.html">Marcar asistencia →</a></nav>
+</div>
+
+<div class="wrap narrow">
+
+  <div id="form-view" class="card login-card">
+    <div class="profile-role" style="margin-bottom:14px;">Primera vez</div>
+    <h2>Creá tu usuario</h2>
+    <div class="sub">Completá tus datos una sola vez. Después vas a poder marcar tu ingreso y salida con tu documento y contraseña.</div>
+
+    <label for="nombre">Nombre completo</label>
+    <input id="nombre" placeholder="Ej: Ana Torres" autocomplete="off">
+
+    <label for="documento">Número de documento / cédula</label>
+    <input id="documento" placeholder="Ej: 4123456" autocomplete="off">
+
+    <label for="rol">Tipo de usuario</label>
+    <select id="rol">
+      <option value="">Seleccioná una opción</option>
+      <option value="administrativo">Personal Administrativo</option>
+      <option value="docente">Personal Docente</option>
+      <option value="alumno">Alumno</option>
+    </select>
+
+    <label for="pin">Contraseña (4 dígitos)</label>
+    <input id="pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off">
+
+    <label for="pin2">Confirmar contraseña</label>
+    <input id="pin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off">
+
+    <button class="btn-primary" onclick="registrar()">Guardar</button>
+    <div id="registro-error"></div>
+  </div>
+
+  <div id="ok-view" class="card login-card" style="display:none;">
+    <div class="profile-role" style="margin-bottom:14px; background:var(--success-bg); color:var(--success);">Listo</div>
+    <h2>¡Usuario creado!</h2>
+    <div class="sub" id="ok-mensaje">Ya podés marcar tu asistencia con tu documento y contraseña.</div>
+    <a href="/index.html"><button class="btn-primary">Ir a marcar asistencia</button></a>
+  </div>
+
+</div>
+
+<script src="js/registro.js"></script>
+</body>
+</html>

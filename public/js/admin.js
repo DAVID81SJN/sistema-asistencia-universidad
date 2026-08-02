@@ -1,6 +1,35 @@
 const API = '/api';
 let usuarios = [];
 
+// ---------- ACCESO CON CÓDIGO ----------
+async function ingresarAdmin() {
+  const codigo = document.getElementById('admin-codigo').value.trim();
+  const errBox = document.getElementById('gate-error');
+  errBox.innerHTML = '';
+
+  try {
+    const r = await fetch(`${API}/admin/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ codigo })
+    });
+    if (!r.ok) {
+      errBox.innerHTML = '<div class="error-msg">Código incorrecto.</div>';
+      return;
+    }
+    sessionStorage.setItem('admin_ok', '1');
+    mostrarPanel();
+  } catch (e) {
+    errBox.innerHTML = '<div class="error-msg">Error de conexión con el servidor.</div>';
+  }
+}
+
+async function mostrarPanel() {
+  document.getElementById('gate-view').style.display = 'none';
+  document.getElementById('panel-content').style.display = 'block';
+  await inicializarPanel();
+}
+
 function hoyISO() { return new Date().toISOString().slice(0,10); }
 
 function inicioDeMes() {
@@ -8,16 +37,118 @@ function inicioDeMes() {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`;
 }
 
+let sedes = [];
+
+async function cargarSedes() {
+  const r = await fetch(`${API}/admin/sedes`);
+  const data = await r.json();
+  sedes = data.sedes;
+  const sel = document.getElementById('sede-select');
+  sel.innerHTML = sedes.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
+  cargarSedeEnFormulario();
+}
+
+function cargarSedeEnFormulario() {
+  const id = parseInt(document.getElementById('sede-select').value);
+  const sede = sedes.find(s => s.id === id);
+  if (!sede) return;
+  document.getElementById('sede-nombre').value = sede.nombre;
+  document.getElementById('sede-lat').value = sede.latitud;
+  document.getElementById('sede-lng').value = sede.longitud;
+  document.getElementById('sede-radio').value = sede.radio_metros;
+}
+
+async function guardarSede() {
+  const id = document.getElementById('sede-select').value;
+  const nombre = document.getElementById('sede-nombre').value.trim();
+  const latitud = parseFloat(document.getElementById('sede-lat').value);
+  const longitud = parseFloat(document.getElementById('sede-lng').value);
+  const radio_metros = parseFloat(document.getElementById('sede-radio').value);
+
+  if (isNaN(latitud) || isNaN(longitud) || isNaN(radio_metros)) {
+    alert('Revisá que latitud, longitud y radio sean números válidos.');
+    return;
+  }
+
+  const r = await fetch(`${API}/admin/sedes/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nombre, latitud, longitud, radio_metros })
+  });
+
+  if (r.ok) {
+    await cargarSedes();
+    const ok = document.getElementById('sede-guardado');
+    ok.style.display = 'inline';
+    setTimeout(() => ok.style.display = 'none', 2500);
+  } else {
+    const data = await r.json();
+    alert('Error: ' + (data.error || 'no se pudo guardar'));
+  }
+}
+
 window.addEventListener('DOMContentLoaded', async () => {
+  if (sessionStorage.getItem('admin_ok') === '1') {
+    await mostrarPanel();
+  }
+  // Permitir Enter para ingresar el código
+  document.getElementById('admin-codigo').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') ingresarAdmin();
+  });
+});
+
+async function inicializarPanel() {
   document.getElementById('f-fecha').value = hoyISO();
   document.getElementById('r-desde').value = hoyISO();
   document.getElementById('r-hasta').value = hoyISO();
   document.getElementById('rs-desde').value = inicioDeMes();
   document.getElementById('rs-hasta').value = hoyISO();
   await cargarUsuarios();
+  await cargarSedes();
   await cargarTabla();
   await cargarResumen();
-});
+  await cargarUsuariosCompleto();
+}
+
+async function cargarUsuariosCompleto() {
+  const rol = document.getElementById('uf-rol').value;
+  const params = new URLSearchParams();
+  if (rol) params.set('rol', rol);
+
+  const r = await fetch(`${API}/admin/usuarios?${params}`);
+  const data = await r.json();
+  const tbody = document.getElementById('usuarios-completo-body');
+
+  if (data.usuarios.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--slate-light); padding:24px;">Sin usuarios registrados todavía.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.usuarios.map(u => `
+    <tr>
+      <td class="name-cell">${u.nombre} ${u.apellido}</td>
+      <td>${u.legajo}</td>
+      <td>${u.rol}</td>
+      <td>${u.sede_nombre}</td>
+      <td style="font-weight:600;">${u.pin}</td>
+      <td>${u.activo ? '<span class="badge completo">Activo</span>' : '<span class="badge incompleto">Inactivo</span>'}</td>
+      <td>
+        <button class="btn-outline" style="padding:5px 10px; font-size:12px;" onclick="cambiarEstadoUsuario(${u.id}, ${u.activo ? 0 : 1})">
+          ${u.activo ? 'Desactivar' : 'Activar'}
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function cambiarEstadoUsuario(id, nuevoEstado) {
+  await fetch(`${API}/admin/usuarios/${id}/estado`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ activo: nuevoEstado })
+  });
+  await cargarUsuariosCompleto();
+}
 
 async function cargarResumen() {
   const desde = document.getElementById('rs-desde').value;
