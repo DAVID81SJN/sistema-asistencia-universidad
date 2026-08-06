@@ -130,12 +130,20 @@ async function guardarConfig() {
     tolerancia_minutos: document.getElementById('cfg-tolerancia').value,
     permitir_registro_alumnos: document.getElementById('cfg-alumnos').checked ? '1' : '0',
   };
-  await fetch(`${API}/admin/config`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-  msg.innerHTML = '<div class="footer-note" style="color:var(--success); text-align:left;">✓ Configuración guardada.</div>';
+  try {
+    const r = await fetch(`${API}/admin/config`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) {
+      msg.innerHTML = `<div class="error-msg">No se pudo guardar (HTTP ${r.status}). El servidor puede tener una versión vieja del código.</div>`;
+      return;
+    }
+    msg.innerHTML = '<div class="footer-note" style="color:var(--success); text-align:left;">✓ Configuración guardada.</div>';
+  } catch (e) {
+    msg.innerHTML = '<div class="error-msg">Error de conexión con el servidor.</div>';
+  }
 }
 
 async function cargarUsuariosCompleto() {

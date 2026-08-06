@@ -1,5 +1,16 @@
 const API = '/api';
 
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const r = await fetch(`${API}/auth/config-publica`);
+    const config = await r.json();
+    if (!config.permitir_registro_alumnos) {
+      const opcionAlumno = document.querySelector('#rol option[value="alumno"]');
+      if (opcionAlumno) opcionAlumno.remove();
+    }
+  } catch (e) { /* si falla, se muestran todas las opciones por defecto */ }
+});
+
 async function registrar() {
   const errBox = document.getElementById('registro-error');
   errBox.innerHTML = '';

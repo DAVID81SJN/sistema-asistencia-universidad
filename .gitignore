@@ -1,0 +1,6 @@
+node_modules/
+db/asistencia.db
+db/asistencia.db-shm
+db/asistencia.db-wal
+.env
+*.log

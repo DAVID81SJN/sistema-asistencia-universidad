@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../db/database');
 const { generarReporteExcelPersona, generarReporteExcelGeneral } = require('../utils/excelReport');
 const { generarReportePDFPersona } = require('../utils/pdfReport');
+const { getConfig } = require('../utils/config');
 
 function obtenerUsuario(usuarioId) {
   return db.prepare(`
@@ -26,7 +27,7 @@ router.get('/excel/:usuarioId', async (req, res) => {
   if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
 
   const registros = obtenerRegistros(req.params.usuarioId, req.query.desde, req.query.hasta);
-  const wb = await generarReporteExcelPersona(usuario, registros);
+  const wb = await generarReporteExcelPersona(usuario, registros, getConfig());
 
   res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
   res.setHeader('Content-Disposition', `attachment; filename="asistencia_${usuario.legajo}.xlsx"`);
@@ -43,7 +44,7 @@ router.get('/pdf/:usuarioId', (req, res) => {
 
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `attachment; filename="asistencia_${usuario.legajo}.pdf"`);
-  generarReportePDFPersona(usuario, registros, res);
+  generarReportePDFPersona(usuario, registros, res, getConfig());
 });
 
 // GET /api/reportes/excel-general?desde=&hasta=&rol=
@@ -66,7 +67,7 @@ router.get('/excel-general', async (req, res) => {
 
   const filas = db.prepare(query).all(...params);
   const filtroInfo = `Periodo: ${desde || 'inicio'} a ${hasta || 'hoy'}${rol ? ` | Rol: ${rol}` : ''}`;
-  const wb = await generarReporteExcelGeneral(filas, filtroInfo);
+  const wb = await generarReporteExcelGeneral(filas, filtroInfo, getConfig());
 
   res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
   res.setHeader('Content-Disposition', `attachment; filename="asistencia_general.xlsx"`);

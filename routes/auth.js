@@ -1,6 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/database');
+const { getConfig } = require('../utils/config');
+
+// GET /api/auth/config-publica -> datos públicos para la pantalla de registro
+router.get('/config-publica', (req, res) => {
+  const config = getConfig();
+  res.json({
+    permitir_registro_alumnos: config.permitir_registro_alumnos === '1',
+    nombre_institucion: config.nombre_institucion || 'Universidad',
+    nombre_sede: config.nombre_sede || '',
+  });
+});
 
 // POST /api/auth/login  { legajo, pin }
 router.post('/login', (req, res) => {
@@ -35,6 +46,12 @@ router.post('/registro', (req, res) => {
   }
   if (!['administrativo', 'docente', 'alumno'].includes(rol)) {
     return res.status(400).json({ error: 'Rol inválido.' });
+  }
+  if (rol === 'alumno') {
+    const config = getConfig();
+    if (config.permitir_registro_alumnos !== '1') {
+      return res.status(403).json({ error: 'El registro de alumnos todavía no está habilitado (sistema en prueba piloto). Consultá con el administrador.' });
+    }
   }
   if (!/^\d{4}$/.test(pin)) {
     return res.status(400).json({ error: 'La contraseña debe ser de exactamente 4 dígitos.' });

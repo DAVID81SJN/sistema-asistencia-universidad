@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/database');
+const { getConfig, setConfig } = require('../utils/config');
 
 // Código único de acceso al panel del administrador principal.
 // Se puede sobreescribir con la variable de entorno ADMIN_CODE en Railway.
@@ -13,6 +14,22 @@ router.post('/login', (req, res) => {
     return res.json({ ok: true });
   }
   return res.status(401).json({ error: 'Código de acceso incorrecto.' });
+});
+
+// ---------- CONFIGURACIÓN GENERAL ----------
+router.get('/config', (req, res) => {
+  res.json({ config: getConfig() });
+});
+
+router.put('/config', (req, res) => {
+  const permitidas = [
+    'hora_entrada_esperada', 'hora_salida_esperada', 'tolerancia_minutos',
+    'permitir_registro_alumnos', 'nombre_institucion', 'nombre_sede'
+  ];
+  Object.entries(req.body).forEach(([clave, valor]) => {
+    if (permitidas.includes(clave)) setConfig(clave, valor);
+  });
+  res.json({ ok: true, config: getConfig() });
 });
 
 // ---------- SEDES ----------
@@ -50,7 +67,8 @@ router.put('/sedes/:id', (req, res) => {
 router.get('/usuarios', (req, res) => {
   const { rol } = req.query;
   let query = `
-    SELECT u.id, u.legajo, u.nombre, u.apellido, u.rol, u.email, u.pin, u.activo, s.nombre as sede_nombre, u.sede_id
+    SELECT u.id, u.legajo, u.nombre, u.apellido, u.rol, u.email, u.pin, u.activo,
+           u.device_token, u.device_vinculado_en, s.nombre as sede_nombre, u.sede_id
     FROM usuarios u JOIN sedes s ON s.id = u.sede_id
   `;
   const params = [];
@@ -90,6 +108,11 @@ router.put('/usuarios/:id/pin', (req, res) => {
     return res.status(400).json({ error: 'La contraseña debe ser de 4 dígitos.' });
   }
   db.prepare('UPDATE usuarios SET pin = ? WHERE id = ?').run(pin, req.params.id);
+  res.json({ ok: true });
+});
+
+router.put('/usuarios/:id/desvincular-dispositivo', (req, res) => {
+  db.prepare('UPDATE usuarios SET device_token = NULL, device_vinculado_en = NULL WHERE id = ?').run(req.params.id);
   res.json({ ok: true });
 });
 
