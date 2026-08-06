@@ -13,3 +13,12 @@
     }
   } catch (e) { /* si falla, se mantiene el texto por defecto */ }
 })();
+
+// Registra el service worker necesario para que el sistema se pueda "instalar"
+// como app desde el navegador (Android muestra el botón solo; en iPhone la
+// persona lo hace manual desde Safari: Compartir -> Agregar a pantalla de inicio).
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => { /* no es crítico si falla */ });
+  });
+}

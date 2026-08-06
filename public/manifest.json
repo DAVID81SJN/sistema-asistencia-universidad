@@ -1,0 +1,15 @@
+{
+  "name": "Sistema de Asistencia - Universidad Privada del Guairá",
+  "short_name": "Asistencia UPG",
+  "description": "Marcado de asistencia con geolocalización para administrativos, docentes y alumnos.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EEF1F6",
+  "theme_color": "#14213D",
+  "icons": [
+    { "src": "/img/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/img/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
