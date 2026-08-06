@@ -24,7 +24,8 @@ router.get('/config', (req, res) => {
 router.put('/config', (req, res) => {
   const permitidas = [
     'hora_entrada_esperada', 'hora_salida_esperada', 'tolerancia_minutos',
-    'permitir_registro_alumnos', 'nombre_institucion', 'nombre_sede'
+    'permitir_registro_alumnos', 'nombre_institucion', 'nombre_sede',
+    'plan_tipo', 'plan_fecha_renovacion'
   ];
   Object.entries(req.body).forEach(([clave, valor]) => {
     if (permitidas.includes(clave)) setConfig(clave, valor);

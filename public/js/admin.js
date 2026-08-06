@@ -117,6 +117,75 @@ async function cargarConfig() {
   document.getElementById('cfg-hora-salida').value = c.hora_salida_esperada || '17:00';
   document.getElementById('cfg-tolerancia').value = c.tolerancia_minutos || '10';
   document.getElementById('cfg-alumnos').checked = c.permitir_registro_alumnos === '1';
+
+  document.getElementById('plan-tipo').value = c.plan_tipo || 'mensual';
+  document.getElementById('plan-fecha').value = c.plan_fecha_renovacion || '';
+  mostrarBannerVencimiento(c.plan_tipo, c.plan_fecha_renovacion);
+}
+
+async function guardarPlan() {
+  const msg = document.getElementById('plan-msg');
+  msg.innerHTML = '';
+  const plan_tipo = document.getElementById('plan-tipo').value;
+  const plan_fecha_renovacion = document.getElementById('plan-fecha').value;
+
+  if (!plan_fecha_renovacion) {
+    msg.innerHTML = '<div class="error-msg">Elegí una fecha de renovación.</div>';
+    return;
+  }
+
+  try {
+    const r = await fetch(`${API}/admin/config`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan_tipo, plan_fecha_renovacion })
+    });
+    if (!r.ok) {
+      msg.innerHTML = '<div class="error-msg">No se pudo guardar.</div>';
+      return;
+    }
+    msg.innerHTML = '<div class="footer-note" style="color:var(--success); text-align:left;">✓ Guardado.</div>';
+    mostrarBannerVencimiento(plan_tipo, plan_fecha_renovacion);
+  } catch (e) {
+    msg.innerHTML = '<div class="error-msg">Error de conexión con el servidor.</div>';
+  }
+}
+
+function mostrarBannerVencimiento(tipo, fecha) {
+  const banner = document.getElementById('banner-vencimiento');
+  if (!fecha) { banner.style.display = 'none'; return; }
+
+  const hoy = new Date(hoyISO() + 'T00:00:00');
+  const venc = new Date(fecha + 'T00:00:00');
+  const diasRestantes = Math.round((venc - hoy) / (1000 * 60 * 60 * 24));
+
+  if (tipo === 'anual') {
+    // Plan anual: sin apuro, solo mostramos un dato informativo si falta poco (30 días o menos)
+    if (diasRestantes <= 30 && diasRestantes >= 0) {
+      banner.style.display = 'block';
+      banner.innerHTML = `<div class="card" style="background:var(--success-bg); border-color:var(--success); padding:16px 20px;">
+        <strong style="color:var(--success);">✓ Plan anual activo.</strong> Próxima renovación: ${fecha} (${diasRestantes} día(s)). No hace falta ninguna acción urgente.
+      </div>`;
+    } else {
+      banner.style.display = 'none';
+    }
+    return;
+  }
+
+  // Plan mensual: alerta si faltan 5 días o menos, o si ya venció
+  if (diasRestantes < 0) {
+    banner.style.display = 'block';
+    banner.innerHTML = `<div class="card" style="background:var(--alert-bg); border-color:var(--alert); padding:16px 20px;">
+      <strong style="color:var(--alert);">⚠ El plan de Railway venció hace ${Math.abs(diasRestantes)} día(s).</strong> Si no se renovó el pago, el sistema puede estar apagado. Verificá el estado del servicio en Railway.
+    </div>`;
+  } else if (diasRestantes <= 5) {
+    banner.style.display = 'block';
+    banner.innerHTML = `<div class="card" style="background:var(--alert-bg); border-color:var(--alert); padding:16px 20px;">
+      <strong style="color:var(--alert);">⚠ La suscripción mensual de Railway vence en ${diasRestantes} día(s)</strong> (${fecha}). Recordá renovarla para que el sistema no se apague.
+    </div>`;
+  } else {
+    banner.style.display = 'none';
+  }
 }
 
 async function guardarConfig() {
